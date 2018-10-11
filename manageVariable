@@ -1,0 +1,227 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "lbm.h"
+#include <math.h>
+ 
+
+
+void   _malloc_host(
+	double **f_r, double **f_b, double **ff, double **fEq,
+	double **ux, double **uy, double **uz, double **rho_b, double **rho_r, double **rho, double  **phaseField,
+	double **ux_old, double **uy_old, double **uz_old, double **rho_old,
+	int   **image, int NX, int NY, int NZ)
+{
+	int j1 = (NX + 2)*(NY + 2)*(NZ + 2) * 19;
+	int j2 = (NX + 2)*(NY + 2)*(NZ + 2);
+
+	*f_r = (double *)malloc(j1 * sizeof(double));
+	*f_b = (double *)malloc(j1 * sizeof(double));
+	*ff = (double *)malloc(j1 * sizeof(double));
+	*fEq = (double *)malloc(j1 * sizeof(double));
+
+	*ux = (double *)malloc(j2*sizeof(double));
+	*uy = (double *)malloc(j2*sizeof(double));
+	*uz = (double *)malloc(j2*sizeof(double));
+
+	*rho = (double *)malloc(j2*sizeof(double));
+	*rho_b = (double *)malloc(j2*sizeof(double));
+	*rho_r = (double *)malloc(j2*sizeof(double));
+	*phaseField = (double *)malloc(j2*sizeof(double));
+
+	*ux_old = (double *)malloc(j2*sizeof(double));
+	*uy_old = (double *)malloc(j2*sizeof(double));
+	*uz_old = (double *)malloc(j2*sizeof(double));
+	*rho_old = (double *)malloc(j2*sizeof(double));
+
+	*image = (int *)malloc(j2*sizeof(int));
+}
+
+ 
+
+
+void   _malloc_host_np(double **a1, double **a2, double **a3, double **a4, double **a5, double **a6, int   length)
+{
+	*a1 = (double *)malloc(length * sizeof(double));
+	*a2 = (double *)malloc(length * sizeof(double));
+	*a3 = (double *)malloc(length * sizeof(double));
+	*a4 = (double *)malloc(length * sizeof(double));
+	*a5 = (double *)malloc(length*sizeof(double));
+	*a6 = (double *)malloc(length*sizeof(double));
+}
+void   _malloc_host_np(double **a1, double **a2, double **a3, double **a4, double **a5, int   length)
+{
+	*a1 = (double *)malloc(length * sizeof(double));
+	*a2 = (double *)malloc(length * sizeof(double));
+	*a3 = (double *)malloc(length * sizeof(double));
+	*a4 = (double *)malloc(length * sizeof(double));
+	*a5 = (double *)malloc(length*sizeof(double));
+}
+void   _malloc_host_np(double **a1, double **a2, double **a3, double **a4, int   length)
+{
+	*a1 = (double *)malloc(length * sizeof(double));
+	*a2 = (double *)malloc(length * sizeof(double));
+	*a3 = (double *)malloc(length * sizeof(double));
+	*a4 = (double *)malloc(length * sizeof(double));
+}
+void   _malloc_host_np(double **a1, double **a2, double **a3, int   length)
+{
+	*a1 = (double *)malloc(length * sizeof(double));
+	*a2 = (double *)malloc(length * sizeof(double));
+	*a3 = (double *)malloc(length * sizeof(double));
+}
+void   _malloc_host_np(double **a1, double **a2, int   length)
+{
+	*a1 = (double *)malloc(length * sizeof(double));
+	*a2 = (double *)malloc(length * sizeof(double));
+}
+void   _malloc_host_np(double **a1, int   length)
+{
+	*a1 = (double *)malloc(length * sizeof(double));
+}
+void   _malloc_host_np(int **a1, int   length)
+{
+	*a1 = (int *)malloc(length * sizeof(int));
+}
+void   _malloc_device_np(double **a1, double **a2, double **a3, double **a4, double **a5, double **a6, int   length, int  numGPUs)
+{  
+	if (numGPUs > 0)
+	{
+		cudaMalloc((void**)a1, length*sizeof(double));
+		cudaMalloc((void**)a2, length*sizeof(double));
+		cudaMalloc((void**)a3, length*sizeof(double));
+		cudaMalloc((void**)a4, length*sizeof(double));
+		cudaMalloc((void**)a5, length*sizeof(double));
+		cudaMalloc((void**)a6, length*sizeof(double));		 
+	}
+}
+void   _malloc_device_np(double **a1, double **a2, double **a3, double **a4, double **a5,   int   length, int  numGPUs)
+{
+	if (numGPUs > 0)
+	{
+		cudaMalloc((void**)a1, length*sizeof(double));
+		cudaMalloc((void**)a2, length*sizeof(double));
+		cudaMalloc((void**)a3, length*sizeof(double));
+		cudaMalloc((void**)a4, length*sizeof(double));
+		cudaMalloc((void**)a5, length*sizeof(double));		 
+	}
+}
+void   _malloc_device_np(double **a1, double **a2, double **a3, double **a4,   int   length, int  numGPUs)
+{
+	if (numGPUs > 0)
+	{
+		cudaMalloc((void**)a1, length*sizeof(double));
+		cudaMalloc((void**)a2, length*sizeof(double));
+		cudaMalloc((void**)a3, length*sizeof(double));
+		cudaMalloc((void**)a4, length*sizeof(double));		 
+	}
+}
+void   _malloc_device_np(double **a1, double **a2, double **a3,  int   length, int  numGPUs)
+{
+	if (numGPUs > 0)
+	{
+		cudaMalloc((void**)a1, length*sizeof(double));
+		cudaMalloc((void**)a2, length*sizeof(double));
+		cudaMalloc((void**)a3, length*sizeof(double));	 
+	}
+}
+void   _malloc_device_np(double **a1, double **a2 , int   length, int  numGPUs)
+{
+	if (numGPUs > 0)
+	{
+		cudaMalloc((void**)a1, length*sizeof(double));
+		cudaMalloc((void**)a2, length*sizeof(double));	 
+	}
+}
+void   _malloc_device_np(double **a1,  int   length, int  numGPUs)
+{
+	if (numGPUs > 0)
+	{
+		cudaMalloc((void**)a1, length*sizeof(double)); 
+	}
+}
+void   _malloc_device_np(int **a1, int   length, int  numGPUs)
+{
+	if (numGPUs > 0)
+	{
+		cudaMalloc((void**)a1, length*sizeof(int));		 
+	}
+}
+
+
+void   assembleDisToSend(int IDcore,double *DTota1, double *DLocal, int NX, int NY,int NZ, int NZ_sub)
+{
+	int jx, jy, jz, j_T, j_L, k;
+	int LineNumTotal = (NY + 2)*(NX + 2)*(NZ + 2);
+	int LineNumSub = (NY + 2)*(NX + 2)*(NZ_sub + 2);
+	int LineNumSubNet = (NY + 2)*(NX + 2)*(NZ_sub);
+
+	for (jz = 1; jz <= NZ_sub; jz++)
+	for (jy = 1; jy <= NY; jy++)
+	for (jx = 1; jx <= NX; jx++)
+	{
+		j_T = LineNumSubNet*(IDcore-1)+ jz*(NY + 2)*(NX + 2) + jy*(NX + 2) + jx;
+		j_L = jz*(NY + 2)*(NX + 2) + jy*(NX + 2) + jx;
+		for (k = 0; k < 19; k++)
+		{
+			DLocal[j_L + k * LineNumSub] = DTota1[j_T + k * LineNumTotal];			 
+		}
+	}
+}
+
+void   assembleDisBC_EX(int IDcore, double *DataLocal, double *DataBC, int NX, int NY, int NZ_sub, int N)
+{
+	int jx, jy,  j_BC, j_L, k;
+	int LineNumLocal = (NY + 2)*(NX + 2)*(NZ_sub + 2);	 
+	int LineNumSubNet = (NY + 2)*(NX + 2);
+		 
+	for (jy = 1; jy <= NY; jy++)
+	for (jx = 1; jx <= NX; jx++)
+	{		 
+		j_L = N * (NY + 2)*(NX + 2) + jy*(NX + 2) + jx;		 
+		j_BC =   jy*(NX + 2) + jx;
+		for (k = 0; k < 19; k++)
+		{
+			DataBC[j_BC + k * LineNumSubNet] = DataLocal[j_L + k * LineNumLocal];
+		}
+	}
+}
+
+void   assemble_BC_Local_dis(int IDcore, double *DataBC, double *DataLocal, int NX, int NY, int NZ_sub, int N)
+{
+	int jx, jy,  j_BC, j_L, k;
+	int LineNumLocal = (NY + 2)*(NX + 2)*(NZ_sub + 2);
+	//int LineNumSub = (NY + 2)*(NX + 2)*(NZ_sub + 2);
+	int LineNumSubNet = (NY + 2)*(NX + 2);
+
+	//for (jz = 1; jz <= NZ_sub; jz++)
+	for (jy = 1; jy <= NY; jy++)
+	for (jx = 1; jx <= NX; jx++)
+	{
+		j_L = N * (NY + 2)*(NX + 2) + jy*(NX + 2) + jx;//N=0,assemble to 0 row;N=N,assemble to N row.
+		j_BC = jy*(NX + 2) + jx;
+		for (k = 0; k < 19; k++)
+		{
+			DataLocal[j_L + k * LineNumLocal] = DataBC[j_BC + k * LineNumSubNet]  ;
+		}
+	}
+}
+void   assemble_BC_Local_dis_checkself(int IDcore, double *DataBC, double *DataLocal, int NX, int NY, int NZ_sub, int N,double *check)
+{
+	int jx, jy,  j_BC, j_L, k;
+	int LineNumLocal = (NY + 2)*(NX + 2)*(NZ_sub + 2);
+	//int LineNumSub = (NY + 2)*(NX + 2)*(NZ_sub + 2);
+	int LineNumSubNet = (NY + 2)*(NX + 2);
+
+	//for (jz = 1; jz <= NZ_sub; jz++)
+	for (jy = 1; jy <= NY; jy++)
+	for (jx = 1; jx <= NX; jx++)
+	{
+		j_L = N * (NY + 2)*(NX + 2) + jy*(NX + 2) + jx;//N=0,assemble to 0 row;N=N,assemble to N row.
+		j_BC = jy*(NX + 2) + jx;
+		for (k = 0; k < 19; k++)
+		{
+			DataLocal[j_L + k * LineNumLocal] = DataBC[j_BC + k * LineNumSubNet];
+			check[j_BC + k * LineNumSubNet] = DataBC[j_BC + k * LineNumSubNet];
+		}
+	}
+}
